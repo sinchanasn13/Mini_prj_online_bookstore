@@ -1,4 +1,4 @@
-# 📚 PageTurner — Online Bookstore
+# 📚 The Reading Room — Online Bookstore
 
 A full-stack online bookstore built with **Java Spring Boot MVC**, **JDBC**, **H2 Database**, and **HTML/CSS/JavaScript**.
 
