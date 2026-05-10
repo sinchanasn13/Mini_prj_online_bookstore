@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PageTurner — Online Bookstore</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+
+<!-- NAVIGATION -->
+<nav class="navbar" id="navbar">
+    <div class="nav-brand" onclick="showPage('home')">
+        <span class="brand-icon">📚</span>
+        <span class="brand-name">PageTurner</span>
+    </div>
+    <div class="nav-search">
+        <input type="text" id="navSearch" placeholder="Search books, authors..." autocomplete="off">
+        <button class="search-btn" onclick="performSearch()">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+            </svg>
+        </button>
+    </div>
+    <div class="nav-actions">
+        <button class="nav-btn" onclick="showPage('cart')">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
+                <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+            </svg>
+            <span class="cart-badge" id="cartBadge">0</span>
+        </button>
+        <button class="nav-btn auth-btn" id="authBtn" onclick="toggleAuthModal()">Sign In</button>
+        <div class="user-menu" id="userMenu" style="display:none">
+            <button class="nav-btn user-btn" onclick="toggleUserDropdown()">
+                <span id="userInitial">J</span>
+            </button>
+            <div class="user-dropdown" id="userDropdown" style="display:none">
+                <div class="dropdown-name" id="dropdownName">John Doe</div>
+                <button onclick="logout()">Sign Out</button>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<!-- PAGES -->
+<main>
+
+    <!-- HOME PAGE -->
+    <div id="homePage" class="page active">
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="hero-content">
+                <p class="hero-eyebrow">Your Next Great Read Awaits</p>
+                <h1 class="hero-title">Stories That<br><em>Move You</em></h1>
+                <p class="hero-subtitle">Thousands of books. Curated collections. Delivered to your door.</p>
+                <div class="hero-search">
+                    <input type="text" id="heroSearch" placeholder="What are you looking for?">
+                    <button onclick="performHeroSearch()">Explore Books</button>
+                </div>
+            </div>
+            <div class="hero-decoration">
+                <div class="book-stack">
+                    <div class="book-spine b1"></div>
+                    <div class="book-spine b2"></div>
+                    <div class="book-spine b3"></div>
+                    <div class="book-spine b4"></div>
+                    <div class="book-spine b5"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Category Filter -->
+        <section class="categories-section">
+            <div class="container">
+                <div class="categories-header">
+                    <h2>Browse by Genre</h2>
+                </div>
+                <div class="category-pills" id="categoryPills">
+                    <button class="pill active" onclick="filterCategory('')">All Books</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Books Grid -->
+        <section class="books-section">
+            <div class="container">
+                <div class="section-header">
+                    <h2 id="sectionTitle">Our Collection</h2>
+                    <p id="bookCount" class="book-count"></p>
+                </div>
+                <div class="books-grid" id="booksGrid">
+                    <!-- Books will be rendered here -->
+                </div>
+                <div class="loading" id="loading">
+                    <div class="spinner"></div>
+                    <p>Loading books...</p>
+                </div>
+                <div class="empty-state" id="emptyState" style="display:none">
+                    <p>📭 No books found. Try a different search.</p>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- BOOK DETAIL PAGE -->
+    <div id="bookDetailPage" class="page">
+        <div class="container">
+            <button class="back-btn" onclick="showPage('home')">← Back to Books</button>
+            <div class="book-detail" id="bookDetailContent">
+                <!-- Dynamic content -->
+            </div>
+        </div>
+    </div>
+
+    <!-- CART PAGE -->
+    <div id="cartPage" class="page">
+        <div class="container">
+            <h1 class="page-title">Your Cart</h1>
+            <div class="cart-layout" id="cartLayout">
+                <!-- Dynamic content -->
+            </div>
+        </div>
+    </div>
+
+    <!-- CHECKOUT PAGE -->
+    <div id="checkoutPage" class="page">
+        <div class="container">
+            <h1 class="page-title">Checkout</h1>
+            <div class="checkout-layout">
+                <div class="checkout-form-section">
+                    <h2>Shipping Information</h2>
+                    <div class="form-group">
+                        <label>Full Name *</label>
+                        <input type="text" id="checkoutName" placeholder="John Doe">
+                    </div>
+                    <div class="form-group">
+                        <label>Email Address *</label>
+                        <input type="email" id="checkoutEmail" placeholder="john@example.com">
+                    </div>
+                    <div class="form-group">
+                        <label>Delivery Address</label>
+                        <textarea id="checkoutAddress" placeholder="123 Main Street, City, State, ZIP" rows="3"></textarea>
+                    </div>
+                    <div class="payment-section">
+                        <h2>Payment (Demo)</h2>
+                        <p class="payment-note">This is a demo. No real payment is processed.</p>
+                        <div class="form-group">
+                            <label>Card Number</label>
+                            <input type="text" placeholder="4242 4242 4242 4242" disabled>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Expiry</label>
+                                <input type="text" placeholder="MM/YY" disabled>
+                            </div>
+                            <div class="form-group">
+                                <label>CVV</label>
+                                <input type="text" placeholder="123" disabled>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="checkout-btn" onclick="placeOrder()">Place Order</button>
+                    <button class="back-btn" onclick="showPage('cart')">← Back to Cart</button>
+                </div>
+                <div class="order-summary-section" id="checkoutSummary">
+                    <!-- Dynamic summary -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CONFIRMATION PAGE -->
+    <div id="confirmationPage" class="page">
+        <div class="container">
+            <div class="confirmation-box">
+                <div class="confirmation-icon">✅</div>
+                <h1>Order Confirmed!</h1>
+                <p class="confirmation-msg" id="confirmationMsg"></p>
+                <div class="order-details" id="orderDetails"></div>
+                <button class="primary-btn" onclick="showPage('home')">Continue Shopping</button>
+            </div>
+        </div>
+    </div>
+
+</main>
+
+<!-- AUTH MODAL -->
+<div class="modal-overlay" id="authModal" onclick="closeModalOnOverlay(event)">
+    <div class="modal">
+        <button class="modal-close" onclick="closeAuthModal()">×</button>
+        <div class="modal-tabs">
+            <button class="tab-btn active" id="loginTab" onclick="switchTab('login')">Sign In</button>
+            <button class="tab-btn" id="signupTab" onclick="switchTab('signup')">Sign Up</button>
+        </div>
+
+        <!-- Login Form -->
+        <div id="loginForm">
+            <h2>Welcome Back</h2>
+            <div class="form-group">
+                <label>Username</label>
+                <input type="text" id="loginUsername" placeholder="Enter your username">
+            </div>
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" id="loginPassword" placeholder="Enter your password">
+            </div>
+            <div class="form-error" id="loginError"></div>
+            <button class="primary-btn full-width" onclick="login()">Sign In</button>
+            <p class="demo-creds">Demo: <strong>john_doe</strong> / <strong>password123</strong></p>
+        </div>
+
+        <!-- Signup Form -->
+        <div id="signupForm" style="display:none">
+            <h2>Create Account</h2>
+            <div class="form-group">
+                <label>Full Name</label>
+                <input type="text" id="signupName" placeholder="John Doe">
+            </div>
+            <div class="form-group">
+                <label>Username</label>
+                <input type="text" id="signupUsername" placeholder="johndoe">
+            </div>
+            <div class="form-group">
+                <label>Email</label>
+                <input type="email" id="signupEmail" placeholder="john@example.com">
+            </div>
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" id="signupPassword" placeholder="Min. 6 characters">
+            </div>
+            <div class="form-error" id="signupError"></div>
+            <button class="primary-btn full-width" onclick="signup()">Create Account</button>
+        </div>
+    </div>
+</div>
+
+<!-- TOAST NOTIFICATION -->
+<div class="toast" id="toast"></div>
+
+<footer class="footer">
+    <div class="container">
+        <div class="footer-content">
+            <div class="footer-brand">
+                <span class="brand-icon">📚</span>
+                <span class="brand-name">PageTurner</span>
+                <p>Your favourite online bookstore.</p>
+            </div>
+            <div class="footer-links">
+                <h4>Quick Links</h4>
+                <a onclick="showPage('home')">Browse Books</a>
+                <a onclick="showPage('cart')">My Cart</a>
+            </div>
+            <div class="footer-info">
+                <h4>Tech Stack</h4>
+                <p>Java + Spring Boot MVC</p>
+                <p>JDBC + H2 Database</p>
+                <p>HTML + CSS + JavaScript</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2025 PageTurner. Built as a learning project. REST API: GET /books · GET /books/:id · POST /cart · GET /cart · DELETE /cart/:id · POST /checkout</p>
+        </div>
+    </div>
+</footer>
+
+<script src="/js/app.js"></script>
+</body>
+</html>
